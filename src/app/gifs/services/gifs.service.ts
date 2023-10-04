@@ -7,13 +7,27 @@ const GIPHY_API_KEY = "wkfUxdiDfMjNwPpyKrv1COVkxIatdhnp";
 @Injectable({providedIn: 'root'})
 export class GifsService {
 
+  constructor(private http: HttpClient ) {
+    this.loadLocalStorage();
+  }
+
   public gifList: Gif[] = [];
 
   private _tagsHistory: string[] = [];
   private apiKey: string = GIPHY_API_KEY;
   private serviceURL: string = "https://api.giphy.com/v1/gifs/"
 
-  constructor(private http: HttpClient ) { }
+  private safeLocalStorage(): void {
+    localStorage.setItem("history", JSON.stringify(this._tagsHistory))
+  }
+
+  private loadLocalStorage():void {
+    if(!localStorage.getItem("history")) return;
+
+    this._tagsHistory = JSON.parse(localStorage.getItem("history")! );
+
+  }
+
 
   get tagsHistory() {
     return [...this._tagsHistory];
@@ -26,6 +40,7 @@ export class GifsService {
     }
     this._tagsHistory.unshift(tag);
     this._tagsHistory = this._tagsHistory.splice( 0, 10);
+    this.safeLocalStorage();
   }
 
   /* async */ searchTag(newTag: string):void/* :Promise<void> */ {
