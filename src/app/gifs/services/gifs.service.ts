@@ -59,7 +59,7 @@ export class GifsService {
       /* Con HttpModule de Angular */
       const params = new HttpParams()
         .set("api_key", this.apiKey)
-        .set("limit", "10")
+        .set("limit", "8")
         .set("q", newTag)
     this.http.get<SearchResponse>(`${this.serviceURL}search`, {params})
       .subscribe(resp => {
